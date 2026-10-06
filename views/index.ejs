@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Новости</title>
+</head>
+<body>
+    <h1>Новости Ведомостей</h1>
+
+    <select id="category">
+        <option>Загрузка...</option>
+    </select>
+
+    <input type="number" id="count" value="5" min="1">
+
+    <button onclick="loadNews()">Показать</button>
+
+    <div id="result"></div>
+
+    <script>
+        fetch('/api/categories')
+            .then(res => res.json())
+            .then(data => {
+                const select = document.getElementById('category');
+                select.innerHTML = '';
+                data.forEach(cat => {
+                    select.innerHTML += `<option value="${cat.id}">${cat.name}</option>`;
+                });
+            });
+
+        function loadNews() {
+            const category = document.getElementById('category').value;
+            const count = document.getElementById('count').value;
+            const result = document.getElementById('result');
+
+            result.innerHTML = 'Загрузка...';
+
+            fetch(`/${count}/news/for/${category}`)
+                .then(res => res.text())
+                .then(html => {
+                    result.innerHTML = html;
+                });
+        }
+    </script>
+</body>
+</html>
